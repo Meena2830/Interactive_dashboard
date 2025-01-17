@@ -1,5 +1,5 @@
 import React from "react";
-import { Calendar } from "lucide-react";
+
 import { useDashboardStore } from "../store/dashboardStore";
 
 export const Header = () => {
@@ -10,7 +10,6 @@ export const Header = () => {
       <h1 className="text-2xl font-bold">Analytics Dashboard</h1>
 
       <div className="flex items-center space-x-4">
-        <Calendar className="text-gray-500" size={20} />
         <select
           value={dateRange}
           onChange={(e) => setDateRange(e.target.value)}
