@@ -16,7 +16,7 @@ export const Sidebar = () => {
   return (
     <div className="h-screen w-64 bg-gray-900 text-white p-6 flex flex-col">
       <div className="mb-8">
-        <h2 className="text-xl font-bold">Dashboard</h2>
+        <h2 className="text-xl font-bold">Data Dashboard</h2>
         <p className="text-gray-400 text-sm mt-2">Welcome, {user?.name}</p>
       </div>
 

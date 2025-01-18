@@ -1,34 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
+import { Line, Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
-
-// Import the zoom plugin
-import zoomPlugin from "chartjs-plugin-zoom";
-
-// Import the API
+import zoomPlugin from "chartjs-plugin-zoom"; // Import the zoom plugin
 import { api } from "../services/api"; // Update this path
 
+// Register the necessary chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
   zoomPlugin // Register the zoom plugin
 );
 
-export const UserChart = ({ data }) => {
+export const UserChart = ({ data, type }) => {
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -79,8 +78,9 @@ export const UserChart = ({ data }) => {
         label: "Active Users",
         data: sortedData.map((item) => item.users),
         borderColor: "#3b82f6",
-        backgroundColor: "#3b82f6",
-        fill: false,
+        backgroundColor:
+          type === "area" ? "rgba(59, 130, 246, 0.5)" : "#3b82f6", // Set backgroundColor based on chart type
+        fill: type === "area", // Enable fill for area chart
       },
     ],
   };
@@ -122,6 +122,9 @@ export const UserChart = ({ data }) => {
     setSortOption(option);
   };
 
+  // Dynamically choose the chart component (Bar or Line)
+  const ChartComponent = type === "bar" ? Bar : Line;
+
   return (
     <div>
       {/* Sorting options */}
@@ -147,7 +150,7 @@ export const UserChart = ({ data }) => {
       </div>
 
       <div style={{ height: "400px", width: "100%" }}>
-        <Line data={chartDataFormatted} options={options} />
+        <ChartComponent data={chartDataFormatted} options={options} />
       </div>
 
       {/* Modal for drilled-down data */}

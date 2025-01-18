@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
+import { Line, Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,11 +10,10 @@ import {
   Tooltip,
   Legend,
   Filler,
-  ArcElement, // Added for clickable functionality
+  ArcElement,
 } from "chart.js";
 import { api } from "../services/api"; // Update this path
 
-// Import the chartjs-plugin-zoom
 import zoomPlugin from "chartjs-plugin-zoom";
 
 // Register plugins and scales
@@ -27,11 +26,11 @@ ChartJS.register(
   Tooltip,
   Legend,
   Filler,
-  ArcElement, // Ensure ArcElement is registered for clickable charts
+  ArcElement,
   zoomPlugin
 );
 
-export const TrafficChart = ({ dateRange }) => {
+export const TrafficChart = ({ dateRange, type = "line" }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -74,25 +73,31 @@ export const TrafficChart = ({ dateRange }) => {
     }
   });
 
-  const chartData = {
+  // Format chart data based on the type ("area" or "bar")
+  const chartDataFormatted = {
     labels: sortedData.map((item) => item.date),
     datasets: [
       {
-        fill: true,
+        fill: type === "area", // Fill for "area" type
         label: "Page Views",
         data: sortedData.map((item) => item.pageViews),
         borderColor: "#3b82f6",
-        backgroundColor: "rgba(59, 130, 246, 0.5)",
+        backgroundColor:
+          type === "area" ? "rgba(59, 130, 246, 0.5)" : "#3b82f6", // Conditional color for "area"
       },
       {
-        fill: true,
+        fill: type === "area", // Fill for "area" type
         label: "Unique Visitors",
         data: sortedData.map((item) => item.users),
         borderColor: "#10b981",
-        backgroundColor: "rgba(16, 185, 129, 0.5)",
+        backgroundColor:
+          type === "area" ? "rgba(16, 185, 129, 0.5)" : "#10b981", // Conditional color for "area"
       },
     ],
   };
+
+  // Determine the chart component based on the type
+  const ChartComponent = type === "bar" ? Bar : Line;
 
   const options = {
     responsive: true,
@@ -165,7 +170,7 @@ export const TrafficChart = ({ dateRange }) => {
       </div>
 
       <div style={{ height: "400px", width: "100%" }}>
-        <Line data={chartData} options={options} />
+        <ChartComponent data={chartDataFormatted} options={options} />
       </div>
 
       {/* Modal to show detailed data when a segment/bar is clicked */}
